@@ -1,28 +1,70 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+<div class="container">
+  <SearchBar @termChange="onTermChange"></SearchBar>
+  <div class="row">
+  <VideoDetail :itemVideo="selectedVideo"></VideoDetail>
+  <VideoList @videoSelect="onVideoSelect" :videosArray="videos"></VideoList>
   </div>
+</div>
+
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import axios from 'axios';
+import SearchBar from './components/SearchBar';
+import VideoList from './components/VideoList';
+import VideoDetail from './components/VideoDetail';
+
+const API_KEY = 'AIzaSyANrsm43eJ5IRGuxfuw8ffqaGxX7RQxOus';
+
 
 export default {
+
   name: 'App',
   components: {
-    HelloWorld
+    SearchBar,
+    VideoList,
+    VideoDetail
+  },
+
+  data() {
+    return {
+      videos: [],
+      selectedVideo: null
+    }
+  },
+
+  methods: {
+    onVideoSelect: function(itemVideo){
+      this.selectedVideo = itemVideo;
+      
+    },
+    onTermChange: function (searchTerm) { // searchTerm drugi argument funkcije onInput iz SearchBar.vue (event.target.value)
+   
+     axios.get('https://www.googleapis.com/youtube/v3/search', {
+       params: {
+         key: API_KEY,
+         type: 'video',
+         part: 'snippet',
+         q: searchTerm // query for our searchTerm
+       }
+     }).then(response => {
+       this.videos = response.data.items // Dodaje svaki video items u array videos unutar Data
+     })
+     .catch(error => {
+    console.log(error.response)
+});
+      
+    }
   }
 }
 </script>
 
+
+
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
