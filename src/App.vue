@@ -18,7 +18,7 @@ import VideoList from './components/VideoList';
 import VideoDetail from './components/VideoDetail';
 
 const API_KEY = '';
-<!- Please add your own api key ->
+<!-- Please add your own api key -->
 
 
 export default {
